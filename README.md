@@ -1,2 +1,2 @@
 # amatda
-Application to prevent "Oh, I forgot"
+**아 맞다**😬 방지용 웹 애플리케이션
