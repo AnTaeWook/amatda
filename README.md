@@ -1,2 +1,2 @@
 # amatda
-"Oh I forgot" prevention application
+Application to prevent "Oh, I forgot"
