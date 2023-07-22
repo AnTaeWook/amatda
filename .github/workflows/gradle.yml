@@ -37,7 +37,7 @@ jobs:
       uses: mirromutth/mysql-action@v1.1
       with:
         mysql version: '8.0.31'
-        mysql root password: ${{ secrets.RootPassword }}
+        mysql root password: ${{ secrets.DatabaseRootPassword }}
 
       
     - name: Build with Gradle
