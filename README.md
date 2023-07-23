@@ -1,2 +1,3 @@
 # amatda
-Simple Schedule Management Application
+
+📝 Simple Schedule Management Application
