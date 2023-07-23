@@ -1,2 +1,2 @@
 # amatda
-**아 맞다**😬 방지용 투두리스트 애플리케이션
+Simple Schedule Management Application
