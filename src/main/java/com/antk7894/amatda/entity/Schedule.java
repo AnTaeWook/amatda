@@ -1,6 +1,7 @@
 package com.antk7894.amatda.entity;
 
 import com.antk7894.amatda.entity.auditing.TimeTrackedEntity;
+import com.antk7894.amatda.entity.planner.Planner;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;

@@ -1,4 +1,4 @@
-package com.antk7894.amatda.entity;
+package com.antk7894.amatda.entity.planner;
 
 import com.antk7894.amatda.entity.auditing.TimeTrackedEntity;
 import jakarta.persistence.*;
@@ -20,9 +20,13 @@ public class Planner extends TimeTrackedEntity {
 
     private String password;
 
-    public Planner(String email, String password) {
+    @Enumerated(value = EnumType.STRING)
+    private UserRole role;
+
+    public Planner(String email, String password, UserRole role) {
         this.email = email;
         this.password = password;
+        this.role = role;
     }
 
 }
