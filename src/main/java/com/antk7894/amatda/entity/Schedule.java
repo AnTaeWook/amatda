@@ -19,7 +19,7 @@ public class Schedule extends TimeTrackedEntity {
     private Long scheduleId;
 
     @JoinColumn(name = "planner_id")
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     private Planner planner;
 
     private String title;
