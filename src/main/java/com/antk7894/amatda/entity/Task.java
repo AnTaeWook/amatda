@@ -19,7 +19,7 @@ public class Task extends TimeTrackedEntity {
     private Long taskId;
 
     @JoinColumn(name = "planner_id")
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     private Planner planner;
 
     private String title;

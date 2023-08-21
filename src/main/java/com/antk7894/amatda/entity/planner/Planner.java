@@ -29,4 +29,8 @@ public class Planner extends TimeTrackedEntity {
         this.role = role;
     }
 
+    public boolean hasSameId(Planner planner) {
+        return plannerId.longValue() == planner.getPlannerId().longValue();
+    }
+
 }

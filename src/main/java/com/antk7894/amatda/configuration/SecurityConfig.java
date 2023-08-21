@@ -1,4 +1,4 @@
-package com.antk7894.amatda.configuration.security;
+package com.antk7894.amatda.configuration;
 
 import com.antk7894.amatda.filter.JwtAuthenticationFilter;
 import com.antk7894.amatda.jwt.JwtTokenProvider;
