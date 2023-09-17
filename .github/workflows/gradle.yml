@@ -17,7 +17,6 @@ env:
   DB_URL: jdbc:mysql://localhost:3306/amatda
   DB_USERNAME: root
   DB_PASSWORD: root
-  DDL_AUTO: create
   JWT_SECRET: ${{ secrets.JWT_SECRET }} 
 
 permissions:
