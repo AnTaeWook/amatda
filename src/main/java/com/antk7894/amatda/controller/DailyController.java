@@ -4,10 +4,8 @@ import com.antk7894.amatda.dto.daily.DailyCreateRequestDto;
 import com.antk7894.amatda.dto.daily.DailyPatchRequestDto;
 import com.antk7894.amatda.dto.daily.DailyUpdateRequestDto;
 import com.antk7894.amatda.entity.Daily;
-import com.antk7894.amatda.entity.planner.Planner;
 import com.antk7894.amatda.service.DailyService;
 import com.antk7894.amatda.service.PlannerService;
-import com.antk7894.amatda.util.CustomSecurityUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -24,47 +22,40 @@ import java.net.URI;
 public class DailyController {
 
     private final DailyService dailyService;
-    private final PlannerService plannerService;
 
     @GetMapping
     public ResponseEntity<Page<Daily>> all(Pageable pageable) {
-        Planner planner = plannerService.findOneByEmail(CustomSecurityUtil.getCurrentUserEmail());
-        return ResponseEntity.ok(dailyService.findAll(planner, pageable));
+        return ResponseEntity.ok(dailyService.findAll(pageable));
     }
 
     @GetMapping("/{dailyId}")
     public ResponseEntity<Daily> one(@PathVariable Long dailyId) {
-        Planner planner = plannerService.findOneByEmail(CustomSecurityUtil.getCurrentUserEmail());
-        return ResponseEntity.ok(dailyService.findOneById(planner, dailyId));
+        return ResponseEntity.ok(dailyService.findOneById(dailyId));
     }
 
     @PostMapping
     public ResponseEntity<Daily> newDaily(@RequestBody DailyCreateRequestDto dto) {
-        Planner planner = plannerService.findOneByEmail(CustomSecurityUtil.getCurrentUserEmail());
-        Daily daily = dailyService.saveOne(planner, dto);
+        Daily daily = dailyService.saveOne(dto);
         String currentUri = ServletUriComponentsBuilder.fromCurrentRequestUri().toUriString();
         return ResponseEntity.created(URI.create(currentUri + "/" + daily.getDailyId())).body(daily);
     }
 
     @PutMapping("/{dailyId}")
     public ResponseEntity<Daily> updateDaily(@PathVariable Long dailyId, @RequestBody DailyUpdateRequestDto dto) {
-        Planner planner = plannerService.findOneByEmail(CustomSecurityUtil.getCurrentUserEmail());
-        return ResponseEntity.ok(dailyService.updateOne(planner, dailyId, dto));
+        return ResponseEntity.ok(dailyService.updateOne(dailyId, dto));
     }
 
     @PatchMapping("/{dailyId}")
     public ResponseEntity<Daily> manipulateDaily(@PathVariable Long dailyId, @RequestBody DailyPatchRequestDto dto) {
-        Planner planner = plannerService.findOneByEmail(CustomSecurityUtil.getCurrentUserEmail());
         return switch (dto.action()) {
-            case FINISH -> ResponseEntity.ok(dailyService.finishOne(planner, dailyId));
-            case RESET -> ResponseEntity.ok(dailyService.resetOne(planner, dailyId));
+            case FINISH -> ResponseEntity.ok(dailyService.finishOne(dailyId));
+            case RESET -> ResponseEntity.ok(dailyService.resetOne(dailyId));
         };
     }
 
     @DeleteMapping("/{dailyId}")
     public ResponseEntity<?> deleteDaily(@PathVariable Long dailyId) {
-        Planner planner = plannerService.findOneByEmail(CustomSecurityUtil.getCurrentUserEmail());
-        dailyService.removeOne(planner, dailyId);
+        dailyService.removeOne(dailyId);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
     }
 
