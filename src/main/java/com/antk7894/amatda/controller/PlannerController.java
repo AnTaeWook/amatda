@@ -4,7 +4,6 @@ import com.antk7894.amatda.dto.jwt.TokenInfo;
 import com.antk7894.amatda.dto.planner.PlannerJoinRequestDto;
 import com.antk7894.amatda.dto.planner.PlannerLoginRequestDto;
 import com.antk7894.amatda.entity.planner.Planner;
-import com.antk7894.amatda.service.PlannerReadService;
 import com.antk7894.amatda.service.PlannerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -22,16 +21,15 @@ import java.net.URI;
 public class PlannerController {
 
     private final PlannerService plannerService;
-    private final PlannerReadService plannerReadService;
 
     @GetMapping
     public ResponseEntity<Page<Planner>> all(Pageable pageable) {
-        return ResponseEntity.ok(plannerReadService.findAll(pageable));
+        return ResponseEntity.ok(plannerService.findAll(pageable));
     }
 
     @GetMapping("/{plannerId}")
     public ResponseEntity<Planner> one(@PathVariable Long plannerId) {
-        return ResponseEntity.ok(plannerReadService.findOneById(plannerId));
+        return ResponseEntity.ok(plannerService.findOneById(plannerId));
     }
 
     @PostMapping
