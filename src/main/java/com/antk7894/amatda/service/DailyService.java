@@ -19,7 +19,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class DailyService {
 
     private final DailyRepository dailyRepository;
-    private final PlannerService plannerService;
     private final CustomSecurityUtil customSecurityUtil;
 
     @Transactional(readOnly = true)
@@ -35,7 +34,7 @@ public class DailyService {
     public Daily findOneById(Long dailyId) {
         Daily daily = dailyRepository.findById(dailyId).orElseThrow();
         checkAuth(daily);
-        return dailyRepository.findById(dailyId).orElseThrow();
+        return daily;
     }
 
     public Daily saveOne(DailyCreateRequestDto dto) {

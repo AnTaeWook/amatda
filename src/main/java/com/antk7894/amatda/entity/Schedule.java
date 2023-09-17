@@ -2,6 +2,7 @@ package com.antk7894.amatda.entity;
 
 import com.antk7894.amatda.entity.auditing.TimeTrackedEntity;
 import com.antk7894.amatda.entity.planner.Planner;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -18,6 +19,7 @@ public class Schedule extends TimeTrackedEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long scheduleId;
 
+    @JsonIgnore
     @JoinColumn(name = "planner_id")
     @ManyToOne(fetch = FetchType.LAZY)
     private Planner planner;
@@ -26,13 +28,19 @@ public class Schedule extends TimeTrackedEntity {
 
     private String description;
 
-    private LocalDateTime ddatetime;
+    private LocalDateTime eventDate;
 
-    public Schedule(Planner planner, String title, String description, LocalDateTime ddatetime) {
+    public Schedule(Planner planner, String title, String description, LocalDateTime eventDate) {
         this.planner = planner;
         this.title = title;
         this.description = description;
-        this.ddatetime = ddatetime;
+        this.eventDate = eventDate;
+    }
+
+    public void updateSchedule(String title, String description, LocalDateTime eventDate) {
+        this.title = title;
+        this.description = description;
+        this.eventDate = eventDate;
     }
 
 }
