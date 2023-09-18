@@ -8,6 +8,8 @@ import com.antk7894.amatda.entity.planner.UserRole;
 import com.antk7894.amatda.jwt.JwtTokenProvider;
 import com.antk7894.amatda.repository.PlannerRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
@@ -16,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class PlannerService {
 
@@ -23,6 +26,21 @@ public class PlannerService {
     private final JwtTokenProvider jwtTokenProvider;
     private final PlannerRepository plannerRepository;
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
+
+    @Transactional(readOnly = true)
+    public Page<Planner> findAll(Pageable pageable) {
+        return plannerRepository.findAll(pageable);
+    }
+
+    @Transactional(readOnly = true)
+    public Planner findOneById(Long plannerId) {
+        return plannerRepository.findById(plannerId).orElseThrow();
+    }
+
+    @Transactional(readOnly = true)
+    public Planner findOneByEmail(String email) {
+        return plannerRepository.findByEmail(email).orElseThrow();
+    }
 
     public Planner saveOne(PlannerJoinRequestDto dto) {
         Planner planner = new Planner(dto.email(), passwordEncoder.encode(dto.password()), UserRole.valueOf(dto.role().toUpperCase()));
@@ -33,7 +51,6 @@ public class PlannerService {
         plannerRepository.deleteById(plannerId);
     }
 
-    @Transactional
     public TokenInfo login(PlannerLoginRequestDto dto) {
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(dto.email(), dto.password());
         Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);

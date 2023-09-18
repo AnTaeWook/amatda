@@ -2,6 +2,7 @@ package com.antk7894.amatda.entity;
 
 import com.antk7894.amatda.entity.auditing.TimeTrackedEntity;
 import com.antk7894.amatda.entity.planner.Planner;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -18,6 +19,7 @@ public class Task extends TimeTrackedEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long taskId;
 
+    @JsonIgnore
     @JoinColumn(name = "planner_id")
     @ManyToOne(fetch = FetchType.LAZY)
     private Planner planner;

@@ -6,55 +6,74 @@ import com.antk7894.amatda.entity.Daily;
 import com.antk7894.amatda.entity.planner.Planner;
 import com.antk7894.amatda.entity.planner.UserRole;
 import com.antk7894.amatda.repository.DailyRepository;
+import com.antk7894.amatda.util.CustomSecurityUtil;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class DailyService {
 
     private final DailyRepository dailyRepository;
+    private final CustomSecurityUtil customSecurityUtil;
 
-    public Daily saveOne(Planner planner, DailyCreateRequestDto dto) {
+    @Transactional(readOnly = true)
+    public Page<Daily> findAll(Pageable pageable) {
+        Planner planner = customSecurityUtil.getCurrentUser();
+        return switch (planner.getRole()) {
+            case ADMIN -> dailyRepository.findAll(pageable);
+            case USER -> dailyRepository.findByPlanner(planner, pageable);
+        };
+    }
+
+    @Transactional(readOnly = true)
+    public Daily findOneById(Long dailyId) {
+        Daily daily = dailyRepository.findById(dailyId).orElseThrow();
+        checkAuth(daily);
+        return daily;
+    }
+
+    public Daily saveOne(DailyCreateRequestDto dto) {
+        Planner planner = customSecurityUtil.getCurrentUser();
         Daily daily = new Daily(planner, dto.title(), dto.description(), false);
         return dailyRepository.save(daily);
     }
 
-    @Transactional
-    public Daily updateOne(Planner planner, Long dailyId, DailyUpdateRequestDto dto) {
+    public Daily updateOne(Long dailyId, DailyUpdateRequestDto dto) {
         Daily daily = dailyRepository.findById(dailyId).orElseThrow();
-        checkAuthForUpdate(planner, daily);
+        checkAuth(daily);
         daily.updateTitleAndDescription(dto.title(), dto.description());
         return daily;
     }
 
-    @Transactional
-    public Daily finishOne(Planner planner, Long dailyId) {
+    public Daily finishOne(Long dailyId) {
         Daily daily = dailyRepository.findById(dailyId).orElseThrow();
-        checkAuthForUpdate(planner, daily);
+        checkAuth(daily);
         daily.setFinished(true);
         return daily;
     }
 
-    @Transactional
-    public Daily resetOne(Planner planner, Long dailyId) {
+    public Daily resetOne(Long dailyId) {
         Daily daily = dailyRepository.findById(dailyId).orElseThrow();
-        checkAuthForUpdate(planner, daily);
+        checkAuth(daily);
         daily.setFinished(false);
         return daily;
     }
 
-    @Transactional
-    public void removeOne(Planner planner, Long dailyId) {
+    public void removeOne(Long dailyId) {
         Daily daily = dailyRepository.findById(dailyId).orElseThrow();
-        checkAuthForUpdate(planner, daily);
+        checkAuth(daily);
         dailyRepository.delete(daily);
     }
 
-    private void checkAuthForUpdate(Planner planner, Daily daily) {
+    private void checkAuth(Daily daily) {
+        Planner planner = customSecurityUtil.getCurrentUser();
         if (!planner.getRole().equals(UserRole.ADMIN) && !planner.hasSameId(daily.getPlanner())) {
-            throw new RuntimeException("수정할 권한 없음");
+            throw new RuntimeException("권한 없음");
             // TODO 글로벌 예외 처리
         }
     }
