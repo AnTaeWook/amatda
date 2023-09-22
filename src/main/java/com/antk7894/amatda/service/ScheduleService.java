@@ -13,6 +13,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.NoSuchElementException;
+
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -59,8 +61,7 @@ public class ScheduleService {
     private void checkAuth(Schedule schedule) {
         Planner planner = securityService.getCurrentUser();
         if (!planner.getRole().equals(UserRole.ADMIN) && !planner.hasSameId(schedule.getPlanner())) {
-            throw new RuntimeException("권한 없음");
-            // TODO 글로벌 예외 처리
+            throw new NoSuchElementException();
         }
     }
 
