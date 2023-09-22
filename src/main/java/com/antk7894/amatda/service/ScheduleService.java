@@ -6,7 +6,7 @@ import com.antk7894.amatda.entity.Schedule;
 import com.antk7894.amatda.entity.planner.Planner;
 import com.antk7894.amatda.entity.planner.UserRole;
 import com.antk7894.amatda.repository.ScheduleRepository;
-import com.antk7894.amatda.util.CustomSecurityUtil;
+import com.antk7894.amatda.util.SecurityService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -19,11 +19,11 @@ import org.springframework.transaction.annotation.Transactional;
 public class ScheduleService {
 
     private final ScheduleRepository scheduleRepository;
-    private final CustomSecurityUtil customSecurityUtil;
+    private final SecurityService securityService;
 
     @Transactional(readOnly = true)
     public Page<Schedule> findAll(Pageable pageable) {
-        Planner planner = customSecurityUtil.getCurrentUser();
+        Planner planner = securityService.getCurrentUser();
         return switch (planner.getRole()) {
             case ADMIN -> scheduleRepository.findAll(pageable);
             case USER -> scheduleRepository.findByPlanner(planner, pageable);
@@ -38,7 +38,7 @@ public class ScheduleService {
     }
 
     public Schedule saveOne(ScheduleCreateDto dto) {
-        Planner planner = customSecurityUtil.getCurrentUser();
+        Planner planner = securityService.getCurrentUser();
         Schedule schedule = new Schedule(planner, dto.title(), dto.description(), dto.eventDate());
         return scheduleRepository.save(schedule);
     }
@@ -57,7 +57,7 @@ public class ScheduleService {
     }
 
     private void checkAuth(Schedule schedule) {
-        Planner planner = customSecurityUtil.getCurrentUser();
+        Planner planner = securityService.getCurrentUser();
         if (!planner.getRole().equals(UserRole.ADMIN) && !planner.hasSameId(schedule.getPlanner())) {
             throw new RuntimeException("권한 없음");
             // TODO 글로벌 예외 처리

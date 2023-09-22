@@ -1,13 +1,13 @@
 package com.antk7894.amatda.repository;
 
-import com.antk7894.amatda.entity.Schedule;
+import com.antk7894.amatda.entity.Task;
 import com.antk7894.amatda.entity.planner.Planner;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
+public interface TaskRepository extends JpaRepository<Task, Long> {
 
-    Page<Schedule> findByPlanner(Planner planner, Pageable pageable);
+    Page<Task> findByPlanner(Planner planner, Pageable pageable);
 
 }
