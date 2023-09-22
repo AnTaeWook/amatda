@@ -5,6 +5,7 @@ import com.antk7894.amatda.dto.daily.request.DailyUpdateDto;
 import com.antk7894.amatda.entity.Daily;
 import com.antk7894.amatda.entity.planner.Planner;
 import com.antk7894.amatda.entity.planner.UserRole;
+import com.antk7894.amatda.exception.custom.NoAuthenticationException;
 import com.antk7894.amatda.repository.DailyRepository;
 import com.antk7894.amatda.util.SecurityService;
 import lombok.RequiredArgsConstructor;
@@ -73,8 +74,7 @@ public class DailyService {
     private void checkAuth(Daily daily) {
         Planner planner = securityService.getCurrentUser();
         if (!planner.getRole().equals(UserRole.ADMIN) && !planner.hasSameId(daily.getPlanner())) {
-            throw new RuntimeException("권한 없음");
-            // TODO 글로벌 예외 처리
+            throw new NoAuthenticationException(planner.getPlannerId(), daily.getClass().getSimpleName(), daily.getDailyId());
         }
     }
 
