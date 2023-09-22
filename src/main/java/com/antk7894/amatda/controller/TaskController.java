@@ -3,6 +3,7 @@ package com.antk7894.amatda.controller;
 import com.antk7894.amatda.dto.task.request.TaskActionDto;
 import com.antk7894.amatda.dto.task.request.TaskCreateDto;
 import com.antk7894.amatda.dto.task.request.TaskUpdateDto;
+import com.antk7894.amatda.dto.task.response.TaskInquireDto;
 import com.antk7894.amatda.entity.Task;
 import com.antk7894.amatda.service.TaskService;
 import lombok.RequiredArgsConstructor;
@@ -23,32 +24,33 @@ public class TaskController {
     private final TaskService taskService;
 
     @GetMapping
-    public ResponseEntity<Page<Task>> all(Pageable pageable) {
-        return ResponseEntity.ok(taskService.findAll(pageable));
+    public ResponseEntity<Page<TaskInquireDto>> all(Pageable pageable) {
+        return ResponseEntity.ok(taskService.findAll(pageable).map(TaskInquireDto::from));
     }
 
     @GetMapping("/{taskId}")
-    public ResponseEntity<Task> one(@PathVariable Long taskId) {
-        return ResponseEntity.ok(taskService.findOneById(taskId));
+    public ResponseEntity<TaskInquireDto> one(@PathVariable Long taskId) {
+        return ResponseEntity.ok(TaskInquireDto.from(taskService.findOneById(taskId)));
     }
 
     @PostMapping
-    public ResponseEntity<Task> newTask(@RequestBody TaskCreateDto dto) {
+    public ResponseEntity<TaskInquireDto> newTask(@RequestBody TaskCreateDto dto) {
         Task task = taskService.saveOne(dto);
         String currentUri = ServletUriComponentsBuilder.fromCurrentRequestUri().toUriString();
-        return ResponseEntity.created(URI.create(currentUri + "/" + task.getTaskId())).body(task);
+        URI taskUri = URI.create(currentUri + "/" + task.getTaskId());
+        return ResponseEntity.created(taskUri).body(TaskInquireDto.from(task));
     }
 
     @PutMapping("/{taskId}")
-    public ResponseEntity<Task> updateTask(@PathVariable Long taskId, @RequestBody TaskUpdateDto dto) {
-        return ResponseEntity.ok(taskService.updateOne(taskId, dto));
+    public ResponseEntity<TaskInquireDto> updateTask(@PathVariable Long taskId, @RequestBody TaskUpdateDto dto) {
+        return ResponseEntity.ok(TaskInquireDto.from(taskService.updateOne(taskId, dto)));
     }
 
     @PatchMapping("/{taskId}")
-    public ResponseEntity<Task> manipulateTask(@PathVariable Long taskId, @RequestBody TaskActionDto dto) {
+    public ResponseEntity<TaskInquireDto> manipulateTask(@PathVariable Long taskId, @RequestBody TaskActionDto dto) {
         return switch (dto.action()) {
-            case FINISH -> ResponseEntity.ok(taskService.finishOne(taskId));
-            case RESET -> ResponseEntity.ok(taskService.resetOne(taskId));
+            case FINISH -> ResponseEntity.ok(TaskInquireDto.from(taskService.finishOne(taskId)));
+            case RESET -> ResponseEntity.ok(TaskInquireDto.from(taskService.resetOne(taskId)));
         };
     }
 

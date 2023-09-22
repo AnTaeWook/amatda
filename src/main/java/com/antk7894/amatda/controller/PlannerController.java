@@ -1,8 +1,9 @@
 package com.antk7894.amatda.controller;
 
 import com.antk7894.amatda.dto.jwt.TokenInfo;
-import com.antk7894.amatda.dto.planner.PlannerJoinRequestDto;
-import com.antk7894.amatda.dto.planner.PlannerLoginRequestDto;
+import com.antk7894.amatda.dto.planner.request.PlannerJoinDto;
+import com.antk7894.amatda.dto.planner.request.PlannerLoginDto;
+import com.antk7894.amatda.dto.planner.response.PlannerInquireDto;
 import com.antk7894.amatda.entity.planner.Planner;
 import com.antk7894.amatda.service.PlannerService;
 import lombok.RequiredArgsConstructor;
@@ -23,24 +24,25 @@ public class PlannerController {
     private final PlannerService plannerService;
 
     @GetMapping
-    public ResponseEntity<Page<Planner>> all(Pageable pageable) {
-        return ResponseEntity.ok(plannerService.findAll(pageable));
+    public ResponseEntity<Page<PlannerInquireDto>> all(Pageable pageable) {
+        return ResponseEntity.ok(plannerService.findAll(pageable).map(PlannerInquireDto::from));
     }
 
     @GetMapping("/{plannerId}")
-    public ResponseEntity<Planner> one(@PathVariable Long plannerId) {
-        return ResponseEntity.ok(plannerService.findOneById(plannerId));
+    public ResponseEntity<PlannerInquireDto> one(@PathVariable Long plannerId) {
+        return ResponseEntity.ok(PlannerInquireDto.from(plannerService.findOneById(plannerId)));
     }
 
     @PostMapping
-    public ResponseEntity<Planner> newPlanner(@RequestBody PlannerJoinRequestDto dto) {
+    public ResponseEntity<PlannerInquireDto> newPlanner(@RequestBody PlannerJoinDto dto) {
         Planner planner = plannerService.saveOne(dto);
         String currentUri = ServletUriComponentsBuilder.fromCurrentRequestUri().toUriString();
-        return ResponseEntity.created(URI.create(currentUri + "/" + planner.getPlannerId())).body(planner);
+        URI plannerUri = URI.create(currentUri + "/" + planner.getPlannerId());
+        return ResponseEntity.created(plannerUri).body(PlannerInquireDto.from(planner));
     }
 
     @PostMapping("/login")
-    public ResponseEntity<TokenInfo> login(@RequestBody PlannerLoginRequestDto dto) {
+    public ResponseEntity<TokenInfo> login(@RequestBody PlannerLoginDto dto) {
         return ResponseEntity.ok(plannerService.login(dto));
     }
 
