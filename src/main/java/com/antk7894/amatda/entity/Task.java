@@ -7,6 +7,7 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 
@@ -28,6 +29,7 @@ public class Task extends TimeTrackedEntity {
 
     private String description;
 
+    @Setter
     private boolean isFinished;
 
     private LocalDateTime dueDate;
@@ -37,6 +39,12 @@ public class Task extends TimeTrackedEntity {
         this.title = title;
         this.description = description;
         this.isFinished = isFinished;
+        this.dueDate = dueDate;
+    }
+
+    public void updateTask(String title, String description, LocalDateTime dueDate) {
+        this.title = title;
+        this.description = description;
         this.dueDate = dueDate;
     }
 
