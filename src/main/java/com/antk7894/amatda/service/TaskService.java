@@ -5,6 +5,7 @@ import com.antk7894.amatda.dto.task.request.TaskUpdateDto;
 import com.antk7894.amatda.entity.Task;
 import com.antk7894.amatda.entity.planner.Planner;
 import com.antk7894.amatda.entity.planner.UserRole;
+import com.antk7894.amatda.exception.custom.NoAuthenticationException;
 import com.antk7894.amatda.repository.TaskRepository;
 import com.antk7894.amatda.util.SecurityService;
 import lombok.RequiredArgsConstructor;
@@ -12,8 +13,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.NoSuchElementException;
 
 @Service
 @Transactional
@@ -75,7 +74,7 @@ public class TaskService {
     private void checkAuth(Task task) {
         Planner planner = securityService.getCurrentUser();
         if (!planner.getRole().equals(UserRole.ADMIN) && !planner.hasSameId(task.getPlanner())) {
-            throw new NoSuchElementException();
+            throw new NoAuthenticationException(planner.getPlannerId(), task.getClass().getSimpleName(), task.getTaskId());
         }
     }
 
