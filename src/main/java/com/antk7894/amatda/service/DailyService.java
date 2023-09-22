@@ -1,7 +1,7 @@
 package com.antk7894.amatda.service;
 
-import com.antk7894.amatda.dto.daily.DailyCreateRequestDto;
-import com.antk7894.amatda.dto.daily.DailyUpdateRequestDto;
+import com.antk7894.amatda.dto.daily.request.DailyCreateDto;
+import com.antk7894.amatda.dto.daily.request.DailyUpdateDto;
 import com.antk7894.amatda.entity.Daily;
 import com.antk7894.amatda.entity.planner.Planner;
 import com.antk7894.amatda.entity.planner.UserRole;
@@ -37,13 +37,13 @@ public class DailyService {
         return daily;
     }
 
-    public Daily saveOne(DailyCreateRequestDto dto) {
+    public Daily saveOne(DailyCreateDto dto) {
         Planner planner = securityService.getCurrentUser();
         Daily daily = new Daily(planner, dto.title(), dto.description(), false);
         return dailyRepository.save(daily);
     }
 
-    public Daily updateOne(Long dailyId, DailyUpdateRequestDto dto) {
+    public Daily updateOne(Long dailyId, DailyUpdateDto dto) {
         Daily daily = dailyRepository.findById(dailyId).orElseThrow();
         checkAuth(daily);
         daily.updateTitleAndDescription(dto.title(), dto.description());
