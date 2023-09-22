@@ -6,6 +6,7 @@ import com.antk7894.amatda.dto.planner.request.PlannerLoginDto;
 import com.antk7894.amatda.dto.planner.response.PlannerInquireDto;
 import com.antk7894.amatda.entity.planner.Planner;
 import com.antk7894.amatda.service.PlannerService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -34,7 +35,7 @@ public class PlannerController {
     }
 
     @PostMapping
-    public ResponseEntity<PlannerInquireDto> newPlanner(@RequestBody PlannerJoinDto dto) {
+    public ResponseEntity<PlannerInquireDto> newPlanner(@RequestBody @Valid PlannerJoinDto dto) {
         Planner planner = plannerService.saveOne(dto);
         String currentUri = ServletUriComponentsBuilder.fromCurrentRequestUri().toUriString();
         URI plannerUri = URI.create(currentUri + "/" + planner.getPlannerId());
@@ -42,7 +43,7 @@ public class PlannerController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<TokenInfo> login(@RequestBody PlannerLoginDto dto) {
+    public ResponseEntity<TokenInfo> login(@RequestBody @Valid PlannerLoginDto dto) {
         return ResponseEntity.ok(plannerService.login(dto));
     }
 

@@ -5,6 +5,7 @@ import com.antk7894.amatda.dto.schedule.request.ScheduleUpdateDto;
 import com.antk7894.amatda.dto.schedule.response.ScheduleInquireDto;
 import com.antk7894.amatda.entity.Schedule;
 import com.antk7894.amatda.service.ScheduleService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -34,7 +35,7 @@ public class ScheduleController {
     }
 
     @PostMapping
-    public ResponseEntity<ScheduleInquireDto> newSchedule(@RequestBody ScheduleCreateDto dto) {
+    public ResponseEntity<ScheduleInquireDto> newSchedule(@RequestBody @Valid ScheduleCreateDto dto) {
         Schedule schedule = scheduleService.saveOne(dto);
         String currentUri = ServletUriComponentsBuilder.fromCurrentRequestUri().toUriString();
         URI scheduleUri = URI.create(currentUri + "/" + schedule.getScheduleId());
@@ -42,7 +43,7 @@ public class ScheduleController {
     }
 
     @PutMapping("/{scheduleId}")
-    public ResponseEntity<ScheduleInquireDto> updateSchedule(@PathVariable Long scheduleId, @RequestBody ScheduleUpdateDto dto) {
+    public ResponseEntity<ScheduleInquireDto> updateSchedule(@PathVariable Long scheduleId, @RequestBody @Valid ScheduleUpdateDto dto) {
         return ResponseEntity.ok(ScheduleInquireDto.from(scheduleService.updateOne(scheduleId, dto)));
     }
 
