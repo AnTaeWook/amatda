@@ -2,6 +2,7 @@ package com.antk7894.amatda.controller;
 
 import com.antk7894.amatda.dto.schedule.request.ScheduleCreateDto;
 import com.antk7894.amatda.dto.schedule.request.ScheduleUpdateDto;
+import com.antk7894.amatda.dto.schedule.response.ScheduleInquireDto;
 import com.antk7894.amatda.entity.Schedule;
 import com.antk7894.amatda.service.ScheduleService;
 import lombok.RequiredArgsConstructor;
@@ -23,25 +24,26 @@ public class ScheduleController {
     private final ScheduleService scheduleService;
 
     @GetMapping
-    public ResponseEntity<Page<Schedule>> all(Pageable pageable) {
-        return ResponseEntity.ok(scheduleService.findAll(pageable));
+    public ResponseEntity<Page<ScheduleInquireDto>> all(Pageable pageable) {
+        return ResponseEntity.ok(scheduleService.findAll(pageable).map(ScheduleInquireDto::from));
     }
 
     @GetMapping("/{scheduleId}")
-    public ResponseEntity<Schedule> one(@PathVariable Long scheduleId) {
-        return ResponseEntity.ok(scheduleService.findOneById(scheduleId));
+    public ResponseEntity<ScheduleInquireDto> one(@PathVariable Long scheduleId) {
+        return ResponseEntity.ok(ScheduleInquireDto.from(scheduleService.findOneById(scheduleId)));
     }
 
     @PostMapping
-    public ResponseEntity<Schedule> newSchedule(@RequestBody ScheduleCreateDto dto) {
+    public ResponseEntity<ScheduleInquireDto> newSchedule(@RequestBody ScheduleCreateDto dto) {
         Schedule schedule = scheduleService.saveOne(dto);
         String currentUri = ServletUriComponentsBuilder.fromCurrentRequestUri().toUriString();
-        return ResponseEntity.created(URI.create(currentUri + "/" + schedule.getScheduleId())).body(schedule);
+        URI scheduleUri = URI.create(currentUri + "/" + schedule.getScheduleId());
+        return ResponseEntity.created(scheduleUri).body(ScheduleInquireDto.from(schedule));
     }
 
     @PutMapping("/{scheduleId}")
-    public ResponseEntity<Schedule> updateSchedule(@PathVariable Long scheduleId, @RequestBody ScheduleUpdateDto dto) {
-        return ResponseEntity.ok(scheduleService.updateOne(scheduleId, dto));
+    public ResponseEntity<ScheduleInquireDto> updateSchedule(@PathVariable Long scheduleId, @RequestBody ScheduleUpdateDto dto) {
+        return ResponseEntity.ok(ScheduleInquireDto.from(scheduleService.updateOne(scheduleId, dto)));
     }
 
     @DeleteMapping("/{scheduleId}")

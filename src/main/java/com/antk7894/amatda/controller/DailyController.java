@@ -1,11 +1,11 @@
 package com.antk7894.amatda.controller;
 
-import com.antk7894.amatda.dto.daily.DailyCreateRequestDto;
-import com.antk7894.amatda.dto.daily.DailyPatchRequestDto;
-import com.antk7894.amatda.dto.daily.DailyUpdateRequestDto;
+import com.antk7894.amatda.dto.daily.request.DailyCreateDto;
+import com.antk7894.amatda.dto.daily.request.DailyPatchDto;
+import com.antk7894.amatda.dto.daily.request.DailyUpdateDto;
+import com.antk7894.amatda.dto.daily.response.DailyInquireDto;
 import com.antk7894.amatda.entity.Daily;
 import com.antk7894.amatda.service.DailyService;
-import com.antk7894.amatda.service.PlannerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -24,32 +24,33 @@ public class DailyController {
     private final DailyService dailyService;
 
     @GetMapping
-    public ResponseEntity<Page<Daily>> all(Pageable pageable) {
-        return ResponseEntity.ok(dailyService.findAll(pageable));
+    public ResponseEntity<Page<DailyInquireDto>> all(Pageable pageable) {
+        return ResponseEntity.ok(dailyService.findAll(pageable).map(DailyInquireDto::from));
     }
 
     @GetMapping("/{dailyId}")
-    public ResponseEntity<Daily> one(@PathVariable Long dailyId) {
-        return ResponseEntity.ok(dailyService.findOneById(dailyId));
+    public ResponseEntity<DailyInquireDto> one(@PathVariable Long dailyId) {
+        return ResponseEntity.ok(DailyInquireDto.from(dailyService.findOneById(dailyId)));
     }
 
     @PostMapping
-    public ResponseEntity<Daily> newDaily(@RequestBody DailyCreateRequestDto dto) {
+    public ResponseEntity<DailyInquireDto> newDaily(@RequestBody DailyCreateDto dto) {
         Daily daily = dailyService.saveOne(dto);
         String currentUri = ServletUriComponentsBuilder.fromCurrentRequestUri().toUriString();
-        return ResponseEntity.created(URI.create(currentUri + "/" + daily.getDailyId())).body(daily);
+        URI dailyUri = URI.create(currentUri + "/" + daily.getDailyId());
+        return ResponseEntity.created(dailyUri).body(DailyInquireDto.from(daily));
     }
 
     @PutMapping("/{dailyId}")
-    public ResponseEntity<Daily> updateDaily(@PathVariable Long dailyId, @RequestBody DailyUpdateRequestDto dto) {
-        return ResponseEntity.ok(dailyService.updateOne(dailyId, dto));
+    public ResponseEntity<DailyInquireDto> updateDaily(@PathVariable Long dailyId, @RequestBody DailyUpdateDto dto) {
+        return ResponseEntity.ok(DailyInquireDto.from(dailyService.updateOne(dailyId, dto)));
     }
 
     @PatchMapping("/{dailyId}")
-    public ResponseEntity<Daily> manipulateDaily(@PathVariable Long dailyId, @RequestBody DailyPatchRequestDto dto) {
+    public ResponseEntity<DailyInquireDto> manipulateDaily(@PathVariable Long dailyId, @RequestBody DailyPatchDto dto) {
         return switch (dto.action()) {
-            case FINISH -> ResponseEntity.ok(dailyService.finishOne(dailyId));
-            case RESET -> ResponseEntity.ok(dailyService.resetOne(dailyId));
+            case FINISH -> ResponseEntity.ok(DailyInquireDto.from(dailyService.finishOne(dailyId)));
+            case RESET -> ResponseEntity.ok(DailyInquireDto.from(dailyService.resetOne(dailyId)));
         };
     }
 
