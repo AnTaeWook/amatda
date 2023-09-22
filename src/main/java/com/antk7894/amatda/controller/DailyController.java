@@ -1,11 +1,12 @@
 package com.antk7894.amatda.controller;
 
 import com.antk7894.amatda.dto.daily.request.DailyCreateDto;
-import com.antk7894.amatda.dto.daily.request.DailyPatchDto;
+import com.antk7894.amatda.dto.daily.request.DailyActionDto;
 import com.antk7894.amatda.dto.daily.request.DailyUpdateDto;
 import com.antk7894.amatda.dto.daily.response.DailyInquireDto;
 import com.antk7894.amatda.entity.Daily;
 import com.antk7894.amatda.service.DailyService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -34,7 +35,7 @@ public class DailyController {
     }
 
     @PostMapping
-    public ResponseEntity<DailyInquireDto> newDaily(@RequestBody DailyCreateDto dto) {
+    public ResponseEntity<DailyInquireDto> newDaily(@RequestBody @Valid DailyCreateDto dto) {
         Daily daily = dailyService.saveOne(dto);
         String currentUri = ServletUriComponentsBuilder.fromCurrentRequestUri().toUriString();
         URI dailyUri = URI.create(currentUri + "/" + daily.getDailyId());
@@ -42,12 +43,12 @@ public class DailyController {
     }
 
     @PutMapping("/{dailyId}")
-    public ResponseEntity<DailyInquireDto> updateDaily(@PathVariable Long dailyId, @RequestBody DailyUpdateDto dto) {
+    public ResponseEntity<DailyInquireDto> updateDaily(@PathVariable Long dailyId, @RequestBody @Valid DailyUpdateDto dto) {
         return ResponseEntity.ok(DailyInquireDto.from(dailyService.updateOne(dailyId, dto)));
     }
 
     @PatchMapping("/{dailyId}")
-    public ResponseEntity<DailyInquireDto> manipulateDaily(@PathVariable Long dailyId, @RequestBody DailyPatchDto dto) {
+    public ResponseEntity<DailyInquireDto> manipulateDaily(@PathVariable Long dailyId, @RequestBody @Valid DailyActionDto dto) {
         return switch (dto.action()) {
             case FINISH -> ResponseEntity.ok(DailyInquireDto.from(dailyService.finishOne(dailyId)));
             case RESET -> ResponseEntity.ok(DailyInquireDto.from(dailyService.resetOne(dailyId)));

@@ -6,6 +6,7 @@ import com.antk7894.amatda.dto.task.request.TaskUpdateDto;
 import com.antk7894.amatda.dto.task.response.TaskInquireDto;
 import com.antk7894.amatda.entity.Task;
 import com.antk7894.amatda.service.TaskService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -34,7 +35,7 @@ public class TaskController {
     }
 
     @PostMapping
-    public ResponseEntity<TaskInquireDto> newTask(@RequestBody TaskCreateDto dto) {
+    public ResponseEntity<TaskInquireDto> newTask(@RequestBody @Valid TaskCreateDto dto) {
         Task task = taskService.saveOne(dto);
         String currentUri = ServletUriComponentsBuilder.fromCurrentRequestUri().toUriString();
         URI taskUri = URI.create(currentUri + "/" + task.getTaskId());
@@ -42,12 +43,12 @@ public class TaskController {
     }
 
     @PutMapping("/{taskId}")
-    public ResponseEntity<TaskInquireDto> updateTask(@PathVariable Long taskId, @RequestBody TaskUpdateDto dto) {
+    public ResponseEntity<TaskInquireDto> updateTask(@PathVariable Long taskId, @RequestBody @Valid TaskUpdateDto dto) {
         return ResponseEntity.ok(TaskInquireDto.from(taskService.updateOne(taskId, dto)));
     }
 
     @PatchMapping("/{taskId}")
-    public ResponseEntity<TaskInquireDto> manipulateTask(@PathVariable Long taskId, @RequestBody TaskActionDto dto) {
+    public ResponseEntity<TaskInquireDto> manipulateTask(@PathVariable Long taskId, @RequestBody @Valid TaskActionDto dto) {
         return switch (dto.action()) {
             case FINISH -> ResponseEntity.ok(TaskInquireDto.from(taskService.finishOne(taskId)));
             case RESET -> ResponseEntity.ok(TaskInquireDto.from(taskService.resetOne(taskId)));
