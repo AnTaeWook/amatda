@@ -18,6 +18,7 @@ env:
   DB_USERNAME: root
   DB_PASSWORD: root
   DDL_OPTION: create
+  SHOW_SQL: false
   JWT_SECRET: ${{ secrets.JWT_SECRET }} 
 
 permissions:

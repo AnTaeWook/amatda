@@ -11,7 +11,7 @@ spring:
     properties:
       hibernate:
         default_batch_fetch_size: 100
-        show_sql: true
+        show_sql: ${SHOW_SQL}
         format_sql: true
 
 jwt:
