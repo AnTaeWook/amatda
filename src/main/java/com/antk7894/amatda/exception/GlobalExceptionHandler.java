@@ -18,7 +18,6 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(NoAuthenticationException.class)
     public ResponseEntity<?> noAuthenticationHandle(NoAuthenticationException exception) {
-        System.out.println(exception.getMessage());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
     }
 
