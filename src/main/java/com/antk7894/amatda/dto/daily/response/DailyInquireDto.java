@@ -11,7 +11,7 @@ public record DailyInquireDto(
 
     public static DailyInquireDto from(Daily daily) {
         return new DailyInquireDto(
-                daily.getDailyId(), daily.getTitle(), daily.getTitle(), daily.isFinished()
+                daily.getDailyId(), daily.getTitle(), daily.getDescription(), daily.isFinished()
         );
     }
 
