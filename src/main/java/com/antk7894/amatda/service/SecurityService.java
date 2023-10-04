@@ -1,7 +1,6 @@
-package com.antk7894.amatda.util;
+package com.antk7894.amatda.service;
 
 import com.antk7894.amatda.entity.planner.Planner;
-import com.antk7894.amatda.service.PlannerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
