@@ -7,7 +7,6 @@ import com.antk7894.amatda.entity.planner.Planner;
 import com.antk7894.amatda.entity.planner.UserRole;
 import com.antk7894.amatda.exception.custom.NoAuthenticationException;
 import com.antk7894.amatda.repository.ScheduleRepository;
-import com.antk7894.amatda.util.SecurityService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
